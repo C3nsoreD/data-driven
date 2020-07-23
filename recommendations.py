@@ -52,7 +52,7 @@ def sim_pearson(prefs, x, y):
             si[item] = 1
 
     # find the number of elements
-    n = len(s)
+    n = len(si)
 
     # if no ratings are common to x and y return 0
     if n==0: return 0
@@ -66,7 +66,7 @@ def sim_pearson(prefs, x, y):
     sum2_Sq = sum([pow(prefs[y][it], 2) for it in si])
 
     # Sum up the products
-    p_Sum = sum([prefsp[x][it]*prefs[y][it] for it in si])
+    p_Sum = sum([prefs[x][it]*prefs[y][it] for it in si])
 
     # Calculate the pearson score
     num = p_Sum-(sum1*sum2/n)
@@ -77,8 +77,21 @@ def sim_pearson(prefs, x, y):
     r = num/den
     return r
 
+# Returns the best matches for person from the prefs dictionary
+# Number of results and similarity function are optional params.
+
+def top_matches(prefs, person, n=5, similarity=sim_pearson):
+    scores = [
+        (similarity(prefs, person, other), other) for other in prefs if other != person
+    ]
+    scores.sort()
+    scores.reverse()
+    # Return a 5 top matches
+    return scores[0:n]
+
+
 if __name__ == "__main__":
     # Running tests here.
     # Two methods used for determing the similarities of individuals based on there ratings on movies
     # Eucleadin and Pearson.
-    5
+    print(top_matches(critics, 'Lisa Rose', n=3))

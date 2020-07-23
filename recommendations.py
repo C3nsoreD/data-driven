@@ -89,6 +89,40 @@ def top_matches(prefs, person, n=5, similarity=sim_pearson):
     # Return a 5 top matches
     return scores[0:n]
 
+# Get recommendations for a person by using a weightedd average
+# of every other user's rankings.
+def get_recommendations(prefs, person, similarity=sim_pearson):
+    totals = {}
+    sim_sums = {}
+
+    for other in prefs:
+        # dont compare me to myself
+        if other == person: 
+            continue
+
+        sim = similarity(perfs, person, other)
+
+        if sim <= 0:
+            continue
+
+        for item in prefs[other]:
+            # only score moovies I havent seen yet
+            if item not in prefs[person] or prefs[person][item] == 0:
+                # similarity * score
+                totals.setdefault(item, 0) 
+                totals[item] += prefs[other][item] * sim
+                # sum of similarities
+                sim_sums.setdefault(item, 0)
+                sim_sums[item] += sim
+        
+        # create the normalized list
+        rankings = [(total/sim_sums[item], item) for item, total in totals.items()]
+
+        # return the sorted list 
+        rankings.sort()
+        rankings.reverse()
+        return rankings
+
 
 if __name__ == "__main__":
     # Running tests here.

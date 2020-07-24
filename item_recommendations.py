@@ -47,20 +47,24 @@ def getRecommendedItems(prefs, itemMatch, user):
     rankings = [
         (score/totalSim[item], item) for item, score in scores.items()
     ]
-    
+
     # return the rankings from hishes to lowest
     rankings.sort()
     rankings.reverse()
     return rankings
 
 
-
 if __name__ == "__main__":
+    # Running tests here.
+
     result = calculateSimilarItems(critics)
-    print(json.dumps(calculateSimilarItems(critics)['Superman Returns'], indent=2))
+    # print(json.dumps(calculateSimilarItems(critics)['Superman Returns'], indent=2))
     
-    # Output the results to a json file.
-    with open('item_similarities.json', 'w') as f:
-        json.dump(result, f)
+    ### Output the results to a json file.
+    
+    # with open('item_similarities.json', 'w') as f:
+    #     json.dump(result, f)
+    recommendationsToby = getRecommendedItems(critics, result, 'Toby')
+    print(recommendationsToby)
 
     # [print(k, v, ) for k, v in calculateSimilarItems(critics).items()]

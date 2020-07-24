@@ -100,7 +100,7 @@ def get_recommendations(prefs, person, similarity=sim_pearson):
         if other == person: 
             continue
 
-        sim = similarity(perfs, person, other)
+        sim = similarity(prefs, person, other)
 
         if sim <= 0:
             continue
@@ -123,9 +123,24 @@ def get_recommendations(prefs, person, similarity=sim_pearson):
         rankings.reverse()
         return rankings
 
+def transform_prefs(prefs):
+    result = {}
+    for person in prefs:
+        for item in prefs[person]:
+            result.setdefault(item, {})
+
+            # flip item and person
+            result[item][person] = prefs[person][item]
+    
+    return result
+
 
 if __name__ == "__main__":
     # Running tests here.
     # Two methods used for determing the similarities of individuals based on there ratings on movies
     # Eucleadin and Pearson.
-    print(top_matches(critics, 'Lisa Rose', n=3))
+    # print(top_matches(critics, 'Lisa Rose', n=3))
+    # Transform the data and 
+    movies = transform_prefs(critics)
+    print(top_matches(movies, 'Superman Returns'))
+    print(get_recommendations(movies, 'Just My Luck'))
